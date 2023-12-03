@@ -32,9 +32,15 @@ enigh_2022_ingresos %>% select(ing_tri) %>% summary()
 enigh_2022_ingresos %>% select(ing_tri) %>% summary()
 enigh_2022_ingresos %>% select(ing_tri) %>% summary()
 
-quantile(enigh_2022_ingresos$ing_tri, prob = seq(0, 1, length = 11), na.rm = TRUE)
+# Filtro para las bases de datos específicas
+enigh_2022_ingresos_filtered <- enigh_2022_ingresos
 
-quantiles_data <-  data.frame(
+enigh_2020_ingresos_filtered <- enigh_2020_ingresos %>% filter(clave == "P104")
+enigh_2018_ingresos_filtered <- enigh_2018_ingresos %>% filter(clave == "P104")
+enigh_2016_ingresos_filtered <- enigh_2016_ingresos %>% filter(clave == "P104")
+
+# Creación del data frame con quantiles
+quantiles_data <- data.frame(
   quantile = seq(0, 1, length = 11),
   value_2022 = quantile(enigh_2022_ingresos$ing_tri, prob = seq(0, 1, length = 11), na.rm = TRUE),
   value_2020 = quantile(enigh_2020_ingresos$ing_tri, prob = seq(0, 1, length = 11), na.rm = TRUE),
@@ -44,11 +50,11 @@ quantiles_data <-  data.frame(
 
 a <- quantiles_data %>%
   mutate(
-    p_2022_2020 = ((value_2022 / value_2020) - 1) * 100,
-    p_2020_2018 = ((value_2020 / value_2018) - 1) * 100
+    p_2022_2020 = (value_2022-value_2020),
+    p_2020_2018 = (value_2020-value_2018)
     )
 
-a %>% filter(quantile<0.75)%>% 
+a %>% filter(quantile<0.99)%>% 
   ggplot() + 
   geom_line(aes(x = quantile, y = value_2022), color = "blue") +
   geom_line(aes(x = quantile, y = value_2020), color = "green") +
@@ -56,6 +62,8 @@ a %>% filter(quantile<0.75)%>%
   geom_line(aes(x = quantile, y = value_2016), color = "red")+
   theme_classic()
 
+a %>%  ggplot() + 
+  geom_line(aes(x=quantile, y=p_2022_2020)) + theme_classic()
 
 
 
