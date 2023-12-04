@@ -40,3 +40,34 @@ print(resultado)
 
 # Crear un gráfico de barras para la proporción
 ggplot(resultado) + geom_histogram(aes(x=prop)) + theme_classic()
+
+
+#Obtener ingresos por percentiles
+resultado <- data.frame(
+  percentile = seq(0, 1, length = 101), 
+  value_2022 = quantile(ingresos_2022_adultos$total_ing_tri_total, 
+                        prob = seq(0, 1, length = 101), na.rm = TRUE)
+)
+
+x <- c()
+
+#Ciclo for para cada percentil 
+for (i in 1:100) {
+  a <- ingresos_2022_adultos %>%
+    filter(total_ing_tri_total >= resultado[[i,2]] &
+             total_ing_tri_total < resultado[[i+1,2]]) %>% 
+    pull(total_ing_tri_P104) %>%
+    na.omit() %>%
+    sum()
+  
+  x <- c(x, a)
+}
+
+plot(x, type="l")
+
+ingresos_2022_adultos %>%
+    filter(total_ing_tri_total >= resultado[[i,2]] &
+             total_ing_tri_total < resultado[[i+1,2]]) %>% 
+    pull(total_ing_tri_P104) %>%
+    na.omit() %>%
+    sum()
