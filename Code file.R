@@ -149,7 +149,12 @@ plot(x, type="l")
 
 }
 
+#Definir diseño muestral
 
+mydesign <- enigh %>%
+  as_survey_design(ids=upm,
+                   strata=est_dis,
+                   weights=factor)
 
 
 
